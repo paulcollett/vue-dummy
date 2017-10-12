@@ -1,0 +1,18 @@
+<div id="app">
+
+  hello
+  <div v-dummy>Hi</div>
+  <div v-dummy="3000">Hi</div>
+  <div v-dummy="3">Hi</div>
+  <div v-dummy="'3,4'"></div>
+  <img v-dummy="'100x100'" />
+  <img v-dummy="'50x100'" />
+  <div style="max-width: 500px"><img v-dummy /></div>
+</div>
+
+<script src="//unpkg.com/vue"></script>
+<script src="../dist/vue-dummy.js"></script>
+
+<script>
+  new Vue({el: '#app'});
+</script>
