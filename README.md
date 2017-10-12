@@ -7,12 +7,16 @@ vue-dummy is a wrapper around the https://dummyjs.com/ library to expose the pla
 
 Add to your HTML page:
 
+```HTML
 <script src="https://unpkg.com/vue"></script>
 <script src="https://unpkg.com/vue-dummy"></script>
+```
 
-or import into your module
-`npm install vue-dummy --save-dev'`
-`import VueDummy from "vue-dummy"`
+or import into your module `npm install vue-dummy --save-dev'`
+
+```JS
+import VueDummy from "vue-dummy"
+```
 
 ## Dummy Text
 
