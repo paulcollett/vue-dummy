@@ -1,7 +1,7 @@
 # vue-dummy
 Placeholder Images and Dummy Text for Vue.js
 
-vue-dummy is a wrapper around the https://dummyjs.com/ library to expose the placeholder Images and Dummy Text as a vue directive
+vue-dummy is a wrapper around the https://dummyjs.com/ library to expose placeholder Images and Dummy Text as a vue directive
 
 ## Usage
 

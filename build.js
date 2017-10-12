@@ -2,9 +2,13 @@ var fs = require('fs');
 var rollup = require('rollup');
 var buble = require('rollup-plugin-buble');
 
+//https://github.com/rollup/rollup-plugin-node-resolve
+var resolve = require('rollup-plugin-node-resolve');
+var commonjs = require('rollup-plugin-commonjs'); // needed as dummyjs is commonjs, not a module
+
 rollup.rollup({
   input: 'src/index.js',
-  plugins: [buble()]
+  plugins: [buble(), resolve(), commonjs()]
 })
 .then(bundle =>
   bundle.generate({
