@@ -4,17 +4,33 @@ var buble = require('rollup-plugin-buble');
 
 //https://github.com/rollup/rollup-plugin-node-resolve
 var resolve = require('rollup-plugin-node-resolve');
-var commonjs = require('rollup-plugin-commonjs'); // needed as dummyjs is commonjs, not a module
+//var commonjs = require('rollup-plugin-commonjs'); // needed as dummyjs is commonjs, not a module
 
 rollup.rollup({
   input: 'src/index.js',
-  plugins: [buble(), resolve(), commonjs()]
+  plugins: [buble(), resolve()]
 })
 .then(bundle =>
   bundle.generate({
-    format: 'umd',
+    format: 'iife',
     name: 'VueDummy'
   }).then(({code}) => write('dist/vue-dummy.js', code, bundle))
+);
+
+rollup.rollup({
+  input: 'src/index.js',
+  plugins: [buble()]
+})
+//https://github.com/rollup/rollup/wiki/pkg.module
+.then(bundle =>
+  bundle.generate({
+    format: 'es'
+  }).then(({code}) => write('dist/vue-dummy.es2015.js', code, bundle))
+)
+.then(bundle =>
+  bundle.generate({
+    format: 'cjs'
+  }).then(({code}) => write('dist/vue-dummy.cjs.js', code, bundle))
 );
 
 function write(dest, code, bundle) {

@@ -2,7 +2,9 @@
   "name": "vue-dummy",
   "version": "1.0.1",
   "description": "Placeholder Images and Dummy Text for Vue.js",
-  "main": "dist/vue-dummy.js",
+  "main": "dist/vue-dummy.cjs.js",
+  "module": "dist/vue-dummy.es2015.js",
+  "browser": "dist/vue-dummy.js",
   "scripts": {
     "build": "node ./build.js",
     "dev": "npm run build && serve ./"
@@ -20,6 +22,7 @@
     "dummy",
     "placeholder",
     "lorum",
+    "ipsum",
     "test"
   ],
   "author": "Paul Collett",
@@ -29,7 +32,7 @@
   },
   "homepage": "https://github.com/paulcollett/vue-dummy#readme",
   "dependencies": {
-    "dummyjs": "^1.0.0"
+    "dummyjs": "^1.0.1"
   },
   "devDependencies": {
     "rollup": "^0.50.0",
