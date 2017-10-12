@@ -1,6 +1,6 @@
 {
   "name": "vue-dummy",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Placeholder Images and Dummy Text for Vue.js",
   "main": "dist/vue-dummy.cjs.js",
   "module": "dist/vue-dummy.es2015.js",
