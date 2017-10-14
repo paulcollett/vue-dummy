@@ -81,3 +81,6 @@ Combine with `v-for` to repeat elements
     <li v-for="i in 6" v-dummy>#{{i}}: </li>
   </ul>
 ```
+
+#### Examples
+https://git.io/vue-dummy-example
