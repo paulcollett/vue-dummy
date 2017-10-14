@@ -6,7 +6,7 @@
   "module": "dist/vue-dummy.es2015.js",
   "browser": "dist/vue-dummy.js",
   "scripts": {
-    "build": "node ./build.js",
+    "build": "npm update dummyjs --save && node ./build.js",
     "dev": "npm run build && serve ./"
   },
   "repository": {
@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/paulcollett/vue-dummy#readme",
   "dependencies": {
-    "dummyjs": "^1.0.1"
+    "dummyjs": "^1.0.2"
   },
   "devDependencies": {
     "rollup": "^0.50.0",

@@ -17,7 +17,12 @@ var repeat = function (str, count) {
   })(str + '', Math.floor(count), '');
 };
 
-var Utils = {rand: rand, repeat: repeat};
+// array.from polyfill (!IE)
+var arr = function (nodelist) {
+  return Array.from ? Array.from(nodelist) : Array.prototype.slice.call(nodelist);
+};
+
+var Utils = {rand: rand, repeat: repeat, arr: arr};
 
 var text = function (argString) {
   var wordCount = (argString + '').split(',');
