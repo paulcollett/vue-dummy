@@ -83,7 +83,10 @@ Plugin.install = function (Vue, options) {
       return;
     }
 
-    var args = (typeof binding.value == 'string' ? binding.value : binding.expression) || '';
+    var args = binding.arg // v-dummy:args
+      || Object.keys(binding.modifiers).join(',') // v-dummy.args
+      || (typeof binding.value == 'string' ? binding.value : binding.expression)
+      || '';
     var nodeName = el.nodeName.toLowerCase();
 
     if(nodeName === 'img') {

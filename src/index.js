@@ -12,7 +12,10 @@ Plugin.install = function (Vue, options) {
       return;
     }
 
-    const args = (typeof binding.value == 'string' ? binding.value : binding.expression) || '';
+    const args = binding.arg // v-dummy:args
+      || Object.keys(binding.modifiers).join(',') // v-dummy.args
+      || (typeof binding.value == 'string' ? binding.value : binding.expression)
+      || '';
     const nodeName = el.nodeName.toLowerCase();
 
     if(nodeName === 'img') {
