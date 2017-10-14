@@ -84,9 +84,15 @@ Plugin.install = function (Vue, options) {
     }
 
     var args = (typeof binding.value == 'string' ? binding.value : binding.expression) || '';
+    var nodeName = el.nodeName.toLowerCase();
 
-    if(el.nodeName.toLowerCase() === 'img') {
+    if(nodeName === 'img') {
       el.src = Dummy$1.src(args, el);
+    } else if(nodeName === 'table') {
+      var tableRow = function () { return ("<tr><td>" + (Dummy$1.text(3)) + "</td><td>" + (Dummy$1.text(3)) + "</td><td>" + (Dummy$1.text(3)) + "</td></tr>"); };
+      el.innerHTML = "<thead>" + (tableRow().replace(/<td/g, '<th')) + "</thead><tbody>" + (tableRow()) + (tableRow()) + (tableRow()) + "</tbody>";
+    } else if(nodeName === 'ul' || nodeName === 'ol') {
+      el.innerHTML += "<li>" + (Dummy$1.text(3)) + "</li><li>" + (Dummy$1.text(3)) + "</li><li>" + (Dummy$1.text(3)) + "</li>";
     } else {
       el.innerHTML += Dummy$1.text(args);
     }

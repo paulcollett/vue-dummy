@@ -13,9 +13,15 @@ Plugin.install = function (Vue, options) {
     }
 
     const args = (typeof binding.value == 'string' ? binding.value : binding.expression) || '';
+    const nodeName = el.nodeName.toLowerCase();
 
-    if(el.nodeName.toLowerCase() === 'img') {
+    if(nodeName === 'img') {
       el.src = Dummy.src(args, el);
+    } else if(nodeName === 'table') {
+      const tableRow = () => `<tr><td>${Dummy.text(3)}</td><td>${Dummy.text(3)}</td><td>${Dummy.text(3)}</td></tr>`;
+      el.innerHTML = `<thead>${tableRow().replace(/<td/g, '<th')}</thead><tbody>${tableRow()}${tableRow()}${tableRow()}</tbody>`;
+    } else if(nodeName === 'ul' || nodeName === 'ol') {
+      el.innerHTML += `<li>${Dummy.text(3)}</li><li>${Dummy.text(3)}</li><li>${Dummy.text(3)}</li>`;
     } else {
       el.innerHTML += Dummy.text(args);
     }

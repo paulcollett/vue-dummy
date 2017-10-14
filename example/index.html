@@ -1,13 +1,16 @@
-<div id="app">
+<meta name="google" value="notranslate">
 
-  hello
-  <div v-dummy>Hi</div>
-  <div v-dummy="3000">Hi</div>
-  <div v-dummy="3">Hi</div>
+<div id="app">
+  <div v-dummy></div>
+  <div v-dummy="3">Prefixed: </div>
   <div v-dummy="'3,4'"></div>
   <img v-dummy="'100x100'" />
   <img v-dummy="'50x100'" />
+  <table v-dummy></table>
+  <ul v-dummy></ul>
+  <ol v-dummy></ol>
   <div style="max-width: 500px"><img v-dummy /></div>
+  <div v-dummy="3000"></div>
 </div>
 
 <script src="//unpkg.com/vue"></script>
