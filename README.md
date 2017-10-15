@@ -51,6 +51,11 @@ Choose random amount of words between 3 & 10:
 <img v-dummy.400x300 /><!-- or, as a Vue modifier -->
 ```
 
+Use width & height attribues _or, size with CSS_
+```HTML
+<img v-dummy width="150" height="150" />
+```
+
 Defaults to the size of the parent container
 ```HTML
 <img v-dummy />
