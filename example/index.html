@@ -1,4 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Vue Dummy - Placeholder Images and Lorum Ipsum</title>
 <meta name="google" value="notranslate">
+<style>
+  body {
+    margin: 3%;
+    font-family: sans-serif;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h3>Vue-Dummy - <small>Placeholder Images and Lorem Ipsum Dummy Text for Vue.js projects</small></h3>
+  <h5 style="margin-top: 0">Usage &amp; Docs: <a href="https://github.com/paulcollett/vue-dummy">https://github.com/paulcollett/vue-dummy</a></h5>
+  <div style="margin: 20px 0;border-top: 1px solid #000"></div>
+</header>
 
 <div id="app">
   <div v-dummy></div>
@@ -17,14 +35,36 @@
     <li v-for="i in 6" v-dummy>#{{i}}: </li>
   </ul>
   <div style="max-width: 500px"><img v-dummy /></div>
-  <div v-dummy="3000"></div>
+  <div v-dummy="250"></div>
   <img v-dummy="'100,400x200,400'" />
   <img v-dummy:100,400x200,400 />
 </div>
 
-<script src="//unpkg.com/vue"></script>
-<script src="../dist/vue-dummy.js"></script>
+<!-- Grab the pre-rendered code -->
+<script>var example_snapshot = document.getElementById('app').outerHTML.replace(/=""/g, '')</script>
 
+<script src="https://unpkg.com/vue"></script>
+<script src="../dist/vue-dummy.js"></script>
 <script>
   new Vue({el: '#app'});
 </script>
+
+<!-- Code Output: -->
+<div style="margin: 20px 0;border-top: 1px solid #000"></div>
+<h5>The above was generated with the following code:</h5>
+<pre id="app-code"></pre>
+<pre id="app-exec">
+&lt;script src="https://unpkg.com/vue">&lt;/script>
+&lt;script src="https://unpkg.com/vue-dummy">&lt;/script>
+&lt;script>
+  new Vue({el: '#app'});
+&lt;/script>
+</pre>
+<script src="//cdn.jsdelivr.net/npm/prismjs" ></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/prismjs/themes/prism.css" />
+<script>
+document.getElementById('app-code').innerHTML = Prism.highlight(example_snapshot, Prism.languages.markup);
+document.getElementById('app-exec').innerHTML = Prism.highlight(document.getElementById('app-exec').innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>'), Prism.languages.markup);
+</script>
+</body>
+</html>
