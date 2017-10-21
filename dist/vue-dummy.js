@@ -24,8 +24,13 @@ var arr = function (nodelist) {
 
 var Utils = {rand: rand, repeat: repeat, arr: arr};
 
-var text = function (argString) {
-  var wordCount = (argString + '').split(',');
+var text = function () {
+  var arguments$1 = arguments;
+
+  var args = [], len = arguments.length;
+  while ( len-- ) { args[ len ] = arguments$1[ len ]; }
+
+  var wordCount = args.join(',').split(','); // allow for mixed argument input ie. ('20,30') or (20, 30)
   wordCount = Utils.rand(wordCount[0], wordCount[1]) || 10;
 
   var lib = 'lorem ipsum dolor sit amet consectetur adipiscing elit nunc euismod vel ' +
@@ -41,24 +46,33 @@ var text = function (argString) {
   return lib.charAt(0).toUpperCase() + lib.slice(1);
 };
 
-var src = function (argString, el) {
-  var size = '404';
+var src = function () {
+  var arguments$1 = arguments;
 
-  if(argString) {
-    size = argString;
-  } else if(el) {
+  var args = [], len = arguments.length;
+  while ( len-- ) { args[ len ] = arguments$1[ len ]; }
+
+  // allow for mixed argument input ie. (200, 200, el) ('200x200', el), ('200')
+  var el = args[args.length - 1] instanceof HTMLImageElement ? args.pop() : null;
+  var size = args.splice(0, 2).join('x');
+
+  if(!size && el) {
     size = [parseInt(el.getAttribute('width') || el.offsetWidth), parseInt(el.getAttribute('height') || el.offsetHeight)].filter(function (v) {return !!v}).join('x');
-    size =  size || (el.parentNode && el.parentNode.offsetWidth) || '404';
+    size =  size || (el.parentNode && el.parentNode.offsetWidth);
   }
 
   // split size to allow for random ranges
-  size = (size + '').split('x').map(function (a){ return Utils.rand(a.split(',')[0], a.split(',')[1]); });
+  size = (size + '' || '404').split('x').map(function (a){ return Utils.rand(a.split(',')[0] || '404', a.split(',')[1]); });
 
   var w = size[0];
-  var h = (size[1]||size[0]);
-  var text = (el && el.getAttribute('data-text') || (w + '×' + h));
-  var bgColor = (el && el.getAttribute('data-color') || '#ccc');
-  var textColor = (el && el.getAttribute('data-text-color') || '#888');
+  var h = size[1] || size[0];
+
+  // Getting a little messy, but idea is to test next argument to see if it isn't a color (not #..) then remove it from the arguments list and return. Otherwise fallback..
+  var text = args[0] && /^\w{2,}/.test(args[0]) ? args.splice(0, 1).pop() : ( el && el.getAttribute('data-text') || (w + '×' + h) );
+  var bgColor = (el && el.getAttribute('data-color') || args[0] || '#ccc');
+  var textColor = (el && el.getAttribute('data-text-color') || args[1] || '#888');
+
+  // Better logic out there?
   var fontSize = (w / 3.5 / (text.length * 0.3)) - text.length;
 
   return 'data:image/svg+xml,'
@@ -98,7 +112,7 @@ Plugin.install = function (Vue, options) {
       el.src = Dummy$1.src(args, el);
     } else if(nodeName === 'table') {
       var tableRow = function () { return ("<tr><td>" + (Dummy$1.text(3)) + "</td><td>" + (Dummy$1.text(3)) + "</td><td>" + (Dummy$1.text(3)) + "</td></tr>"); };
-      el.innerHTML = "<thead>" + (tableRow().replace(/<td/g, '<th')) + "</thead><tbody>" + (tableRow()) + (tableRow()) + (tableRow()) + "</tbody>";
+      el.innerHTML = "<thead>" + (tableRow().replace(/td>/g, 'th>')) + "</thead><tbody>" + (tableRow()) + (tableRow()) + (tableRow()) + "</tbody>";
     } else if(nodeName === 'ul' || nodeName === 'ol') {
       el.innerHTML += "<li>" + (Dummy$1.text(3)) + "</li><li>" + (Dummy$1.text(3)) + "</li><li>" + (Dummy$1.text(3)) + "</li>";
     } else {
@@ -109,6 +123,39 @@ Plugin.install = function (Vue, options) {
   Vue.directive('dummy', {
     // called when the bound element has been inserted into its parent node
     inserted: directive
+  });
+
+  Vue.directive('dummy-self', {
+    inserted: function (el, binding) {
+      el.outerHTML = Dummy$1.text(typeof binding.value == 'string' ? binding.value : binding.expression);
+    }
+  });
+
+  var componentProps = 'i,img,image,t,txt,text'.split(',');
+  var componentPropsObj = componentProps.reduce(function (c, v, i) { c[v] = true; return c }, {});
+
+  Vue.component('dummy', {
+    render: function (createElement) {
+      var this$1 = this;
+
+      var value = '';
+      var renderImage = false;
+
+      for (var i = 0; i < componentProps.length; i++) {
+        if(typeof this$1[componentProps[i]] !== 'undefined') {
+          value = this$1[componentProps[i]] + '';
+          renderImage = componentProps[i][0] === 'i' || value.indexOf('x') > 0;
+        }
+      }
+
+      return createElement(renderImage ? 'img' : 'span', {
+        directives: [{
+          name: renderImage ? 'dummy' : 'dummy-self',
+          value: value
+        }]
+      });
+    },
+    props: componentPropsObj
   });
 };
 

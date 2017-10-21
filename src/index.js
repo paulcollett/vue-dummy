@@ -22,7 +22,7 @@ Plugin.install = function (Vue, options) {
       el.src = Dummy.src(args, el);
     } else if(nodeName === 'table') {
       const tableRow = () => `<tr><td>${Dummy.text(3)}</td><td>${Dummy.text(3)}</td><td>${Dummy.text(3)}</td></tr>`;
-      el.innerHTML = `<thead>${tableRow().replace(/<td/g, '<th')}</thead><tbody>${tableRow()}${tableRow()}${tableRow()}</tbody>`;
+      el.innerHTML = `<thead>${tableRow().replace(/td>/g, 'th>')}</thead><tbody>${tableRow()}${tableRow()}${tableRow()}</tbody>`;
     } else if(nodeName === 'ul' || nodeName === 'ol') {
       el.innerHTML += `<li>${Dummy.text(3)}</li><li>${Dummy.text(3)}</li><li>${Dummy.text(3)}</li>`;
     } else {
@@ -33,6 +33,37 @@ Plugin.install = function (Vue, options) {
   Vue.directive('dummy', {
     // called when the bound element has been inserted into its parent node
     inserted: directive
+  });
+
+  Vue.directive('dummy-self', {
+    inserted: (el, binding) => {
+      el.outerHTML = Dummy.text(typeof binding.value == 'string' ? binding.value : binding.expression);
+    }
+  });
+
+  const componentProps = 'i,img,image,t,txt,text'.split(',');
+  const componentPropsObj = componentProps.reduce((c, v, i) => { c[v] = true; return c }, {});
+
+  Vue.component('dummy', {
+    render: function (createElement) {
+      let value = '';
+      let renderImage = false;
+
+      for (let i = 0; i < componentProps.length; i++) {
+        if(typeof this[componentProps[i]] !== 'undefined') {
+          value = this[componentProps[i]] + '';
+          renderImage = componentProps[i][0] === 'i' || value.indexOf('x') > 0
+        }
+      }
+
+      return createElement(renderImage ? 'img' : 'span', {
+        directives: [{
+          name: renderImage ? 'dummy' : 'dummy-self',
+          value: value
+        }]
+      });
+    },
+    props: componentPropsObj
   });
 }
 

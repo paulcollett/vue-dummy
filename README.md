@@ -38,6 +38,12 @@ Choose random amount of words between 3 & 10:
 <p v-dummy:3,10></p> <!-- or, as a Vue argument-->
 ```
 
+As a component:
+```HTML
+<dummy></dummy>
+<dummy text="30"></dummy>
+<dummy t="1,3"></dummy>
+```
 
 ## Dummy Images
 
@@ -67,6 +73,12 @@ Create random sized images. _Useful for testing dimentions of unknown sized user
 <img v-dummy:100,400x200,400 /> <!-- or, as a Vue argument (or modifier) -->
 ```
 
+As a component:
+```HTML
+<dummy img></dummy>
+<dummy img="400x300"></dummy>
+<dummy i="100"></dummy>
+```
 
 ## Special Elements
 
