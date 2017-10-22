@@ -45,7 +45,7 @@ Plugin.install = function (Vue, options) {
     }
   });
 
-  var componentProps = 'i,img,image,t,txt,text'.split(',');
+  var componentProps = 'i,img,image,t,txt,text,w,words'.split(',');
   var componentPropsObj = componentProps.reduce(function (c, v, i) { c[v] = true; return c }, {});
 
   Vue.component('dummy', {
