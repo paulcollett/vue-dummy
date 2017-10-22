@@ -4,7 +4,8 @@
   "description": "Placeholder Images and Dummy Text for Vue.js",
   "main": "dist/vue-dummy.cjs.js",
   "module": "dist/vue-dummy.es2015.js",
-  "browser": "dist/vue-dummy.js",
+  "jsdelivr": "dist/vue-dummy.js",
+  "unpkg": "dist/vue-dummy.js",
   "scripts": {
     "build": "npm update dummyjs --save && node ./build.js",
     "dev": "npm run build && serve ./"
