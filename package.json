@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/paulcollett/vue-dummy#readme",
   "dependencies": {
-    "dummyjs": "^1.1.1"
+    "dummyjs": "^1.1.6"
   },
   "devDependencies": {
     "rollup": "^0.50.0",

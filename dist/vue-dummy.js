@@ -10,19 +10,14 @@ var rand = function (min, max) {
 
 // repeat polyfill
 var repeat = function (str, count) {
-  return ''.repeat ? ('' + str).repeat(count) : (function (str, count, rpt) {
-    for (var i = 0; i < count; i++) { rpt += str; }
+  return (function (str, count, rpt) {
+    for (var i = 0; i < count; i++) { rpt += (typeof str == 'function' ? str() : String(str)); }
 
     return rpt;
-  })(str + '', Math.floor(count), '');
+  })(str, Math.floor(count), '');
 };
 
 // array.from polyfill (!IE)
-var arr = function (nodelist) {
-  return Array.from ? Array.from(nodelist) : Array.prototype.slice.call(nodelist);
-};
-
-var Utils = {rand: rand, repeat: repeat, arr: arr};
 
 var text = function () {
   var arguments$1 = arguments;
@@ -31,7 +26,7 @@ var text = function () {
   while ( len-- ) { args[ len ] = arguments$1[ len ]; }
 
   var wordCount = args.join(',').split(','); // allow for mixed argument input ie. ('20,30') or (20, 30)
-  wordCount = Utils.rand(wordCount[0], wordCount[1]) || 10;
+  wordCount = rand(wordCount[0], wordCount[1]) || 10;
 
   var lib = 'lorem ipsum dolor sit amet consectetur adipiscing elit nunc euismod vel ' +
     'dolor nec viverra nullam auctor enim condimentum odio laoreet libero ' +
@@ -41,7 +36,7 @@ var text = function () {
 
   var libRepeat = Math.ceil(wordCount/lib.split(' ').length);
 
-  lib = Utils.repeat(lib, libRepeat).split(' ').sort(function () { return 0.5 - Math.random(); }).slice(0, wordCount).join(' ');
+  lib = repeat(lib, libRepeat).split(' ').sort(function () { return 0.5 - Math.random(); }).slice(0, wordCount).join(' ');
 
   return lib.charAt(0).toUpperCase() + lib.slice(1);
 };
@@ -62,7 +57,7 @@ var src = function () {
   }
 
   // split size to allow for random ranges
-  size = (size + '' || '404').split('x').map(function (a){ return Utils.rand(a.split(',')[0] || '404', a.split(',')[1]); });
+  size = (size + '' || '404').split('x').map(function (a){ return rand(a.split(',')[0] || '404', a.split(',')[1]); });
 
   var w = size[0];
   var h = size[1] || size[0];
@@ -80,15 +75,72 @@ var src = function () {
     + '<rect x="0" y="0" width="100%" height="100%" fill="' + bgColor + '"/>'
     + '<line opacity="0.5" x1="0%" y1="0%" x2="100%" y2="100%" stroke="' + textColor + '" stroke-width="2" />'
     + '<line opacity="0.5" x1="100%" y1="0%" x2="0%" y2="100%" stroke="' + textColor + '" stroke-width="2" />'
-    + '<text stroke="' + bgColor + '" stroke-width="2em" x="50%" y="50%" alignment-baseline="middle" text-anchor="middle" font-size="'+fontSize+'">' + text + '</text>'
+    + '<text stroke="' + bgColor + '" stroke-width="2em" x="50%" y="50%" alignment-baseline="middle" text-anchor="middle" font-size="'+fontSize+'" font-family="sans-serif">' + text + '</text>'
     + '<text fill="' + textColor + '" x="50%" y="50%" alignment-baseline="middle" text-anchor="middle" font-size="'+fontSize+'" font-family="sans-serif">' + text + '</text>'
     + '</svg>');
 };
 
-var Dummy$1 = {
-  text: text,
-  src: src
+var table = function (rows, rowsTo, cols, colsTo) {
+  if ( rows === void 0 ) { rows = 3; }
+  if ( rowsTo === void 0 ) { rowsTo = 6; }
+  if ( cols === void 0 ) { cols = 3; }
+  if ( colsTo === void 0 ) { colsTo = 6; }
+
+  cols = rand(cols, colsTo || cols);
+  rows = rand(rows, rowsTo || rows);
+  return "<table><thead><tr>"
+    + repeat(function () { return ("<th>" + (text(1,3)) + "</th>"); }, cols)
+    + "</tr></thead><tbody>"
+    + repeat(("<tr>" + (repeat(function () { return ("<td>" + (text(3,10)) + "</td>"); }, cols)) + "</tr>"), rows)
+    + "</tbody></table>";
 };
+
+var html = function (usersTags) {
+  var tags = usersTags ? String(usersTags).split(',') : 'h1,h2,h3,h4,h5,ul,ol,table,blockquote,img,form'.split(',').join(',p,').split(',');
+  var liFn = function () { return repeat(function () { return ("<li>" + (text(4, 10)) + "</li>"); }, rand(2, 5)); };
+
+  var special = {
+    a: function () { return ("<a href=\"#\">" + (text(2, 4)) + "</a>"); },
+    ul: function () { return ("<ul>" + (liFn()) + "</ul>"); },
+    ol: function (){ return ("<ol>" + (liFn()) + "</ol>"); },
+    table: function () { return table(); },
+    img: function () { return ("<img src=\"" + (src('400,1200x200,800')) + "\" />"); },
+    select: function () { return ("<select>" + (repeat(function () { return ("<option>" + (text(2,4)) + "</option>"); }, 4, 10)) + "</select>"); },
+    p: function () { return ("<p>" + (text(20, 50)) + "</p>"); },
+    button: function () { return ("<button>" + (text(1, 4)) + "</button>"); },
+    input: function () { return ("<input placeholder=\"" + (text(1,3)) + "\" />"); },
+    form: function () { return ("<form action=\"#\">" + (html('label,input,label,select,button')) + "</form>"); }
+  };
+
+  tags = tags
+    .map(function (tag) { return tag.trim().toLowerCase(); })
+    .map(function (tag) { return special[tag] ? special[tag]() : ("<" + tag + ">" + (text(5, 15)) + "</" + tag + ">"); }).join('');
+
+  // few extra tags for default
+  tags += usersTags ? '' :
+    "<hr /><p>" + (text(1, 3)) + " <strong>bold text</strong>. " + (text(1, 3)) + " <em>italic text</em>. " + (text(1, 3)) + " <a href=\"#\">a link</a>. " + (text(150, 250)) + "</p>"
+    + repeat(function () { return ("<p>" + (text(50, 100)) + "</p>"); }, rand(1, 3));
+
+  return tags;
+};
+
+// Undocumented but you could simply do:
+// Dummy(123) instead of Dummy.text(123)
+// or Dummy('100x100')
+// or Dummy('table')
+var expt = function () {
+  var arguments$1 = arguments;
+
+  var args = [], len = arguments.length;
+  while ( len-- ) { args[ len ] = arguments$1[ len ]; }
+
+  var fn = String(args[0]).indexOf('x') > 0 ? src : parseInt(args[0]) > 0 ? text : html;
+
+  return fn.apply(void 0, args);
+};
+expt.t = expt.txt = expt.text = text;
+expt.src = expt.image = expt.img = src;
+expt.html = html;
 
 var Plugin = function () {};
 
@@ -109,14 +161,14 @@ Plugin.install = function (Vue, options) {
     var nodeName = el.nodeName.toLowerCase();
 
     if(nodeName === 'img') {
-      el.src = Dummy$1.src(args, el);
+      el.src = expt.src(args, el);
     } else if(nodeName === 'table') {
-      var tableRow = function () { return ("<tr><td>" + (Dummy$1.text(3)) + "</td><td>" + (Dummy$1.text(3)) + "</td><td>" + (Dummy$1.text(3)) + "</td></tr>"); };
+      var tableRow = function () { return ("<tr><td>" + (expt.text(3)) + "</td><td>" + (expt.text(3)) + "</td><td>" + (expt.text(3)) + "</td></tr>"); };
       el.innerHTML = "<thead>" + (tableRow().replace(/td>/g, 'th>')) + "</thead><tbody>" + (tableRow()) + (tableRow()) + (tableRow()) + "</tbody>";
     } else if(nodeName === 'ul' || nodeName === 'ol') {
-      el.innerHTML += "<li>" + (Dummy$1.text(3)) + "</li><li>" + (Dummy$1.text(3)) + "</li><li>" + (Dummy$1.text(3)) + "</li>";
+      el.innerHTML += "<li>" + (expt.text(3)) + "</li><li>" + (expt.text(3)) + "</li><li>" + (expt.text(3)) + "</li>";
     } else {
-      el.innerHTML += Dummy$1.text(args);
+      el.innerHTML += expt.text(args);
     }
   };
 
@@ -127,7 +179,7 @@ Plugin.install = function (Vue, options) {
 
   Vue.directive('dummy-self', {
     inserted: function (el, binding) {
-      el.outerHTML = Dummy$1.text(typeof binding.value == 'string' ? binding.value : binding.expression);
+      el.outerHTML = expt.text(typeof binding.value == 'string' ? binding.value : binding.expression);
     }
   });
 
